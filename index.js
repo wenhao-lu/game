@@ -11,7 +11,7 @@ class SnakePart {
 var speed = 7;
 
 var tileCount = 20;
-var tileSize = canvas.width / tileCount - 2;
+var tileSize = canvas.width / tileCount;
 
 var headX = 10;
 var headY = 10;
@@ -27,12 +27,20 @@ var inputsYVelocity = 0;
 var xVelocity = 0;
 var yVelocity = 0;
 
+const themeSong = new Audio("theme.mp3");
 const gulpSound = new Audio("gulp.mp3");
 const failSound = new Audio("fail.mp3");
+
+const lightSquareColor = "white";
+const darkSquareColor = "#C4E2FF";
 
 function drawGame() {
   xVelocity = inputsXVelocity;
   yVelocity = inputsYVelocity;
+
+  if (themeSong.paused) {
+    themeSong.play();
+  }
 
   changeSnakePosition();
   let result = isGameOver();
@@ -100,6 +108,7 @@ function isGameOver() {
       ctx.fillText("Game Over", canvas.width / 6.5, canvas.height / 2);
 
       failSound.play();
+      themeSong.pause();
     }
 
     ctx.fillText("Game Over", canvas.width / 6.5, canvas.height / 2);
@@ -117,13 +126,28 @@ function drawScore() {
   gradient.addColorStop("0.9", "red");
   ctx.fillStyle = gradient;
   ctx.font = "10px Verdana";
-  ctx.fillText("Score: " + score, canvas.width - 250, 10);
+  ctx.fillText("Score: " + score, canvas.width - 220, 10);
 }
 
+function clearScreen() {
+  for (let i = 0; i < tileCount; i++) {
+    for (let j = 0; j < tileCount; j++) {
+      if ((i + j) % 2 === 0) {
+        ctx.fillStyle = lightSquareColor;
+      } else {
+        ctx.fillStyle = darkSquareColor;
+      }
+      ctx.fillRect(i * tileSize, j * tileSize, tileSize, tileSize);
+    }
+  }
+}
+
+/*
 function clearScreen() {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
+*/
 
 const snakeHeadUpImg = new Image();
 snakeHeadUpImg.src = "images/snakeHeadUp.png";
