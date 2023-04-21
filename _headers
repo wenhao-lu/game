@@ -1,0 +1,12 @@
+
+Content-Security-Policy: default-src 'self';
+
+X-Content-Type-Options: nosniff;
+
+X-Frame-Options: DENY;
+
+X-XSS-Protection: 1; mode=block;
+
+Referrer-Policy: same-origin;
+
+Feature-Policy: accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none';
