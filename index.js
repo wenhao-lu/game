@@ -1,4 +1,4 @@
-const canvas = document.getElementById("game");
+const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 // Create a single part of snake body
@@ -12,8 +12,6 @@ class SnakePart {
 // Initialize game variables
 // set up canvas size and grid number
 // 20 X 25 = 500
-canvas.width = 500;
-canvas.height = 500;
 var numGrid = 20;
 var gridSize = canvas.width / numGrid;
 
