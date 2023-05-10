@@ -1,6 +1,7 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
+// Create a single part of snake body
 class SnakePart {
   constructor(x, y) {
     this.x = x;
@@ -8,22 +9,30 @@ class SnakePart {
   }
 }
 
-var speed = 7;
+// Initialize game variables
+// set up canvas size and grid number
+// 20 X 25 = 500
+canvas.width = 500;
+canvas.height = 500;
+var numGrid = 20;
+var gridSize = canvas.width / numGrid;
 
-var tileCount = 20;
-var tileSize = canvas.width / tileCount;
-
+// initialize character start position
 var headX = 10;
-var headY = 10;
+var headY = 15;
+// initialize food start position
+var foodX = 20;
+var foodY = 5;
+
+// set up character's initial tail length and speed 
 const snakeParts = [];
-var tailLength = 2;
+var tailLength = 1;
+var speed = 6;
 
-var appleX = 5;
-var appleY = 5;
-
+// initialize keyboard input direction variables 
 var inputsXVelocity = 0;
 var inputsYVelocity = 0;
-
+// initialize character's move direction variables
 var xVelocity = 0;
 var yVelocity = 0;
 
@@ -75,11 +84,11 @@ function isGameOver() {
 
   if (headX < 0) {
     gameOver = true;
-  } else if (headX === tileCount) {
+  } else if (headX === numGrid) {
     gameOver = true;
   } else if (headY < 0) {
     gameOver = true;
-  } else if (headY === tileCount) {
+  } else if (headY === numGrid) {
     gameOver = true;
   }
 
@@ -130,14 +139,14 @@ function drawScore() {
 }
 
 function clearScreen() {
-  for (let i = 0; i < tileCount; i++) {
-    for (let j = 0; j < tileCount; j++) {
+  for (let i = 0; i < numGrid; i++) {
+    for (let j = 0; j < numGrid; j++) {
       if ((i + j) % 2 === 0) {
         ctx.fillStyle = lightSquareColor;
       } else {
         ctx.fillStyle = darkSquareColor;
       }
-      ctx.fillRect(i * tileSize, j * tileSize, tileSize, tileSize);
+      ctx.fillRect(i * gridSize, j * gridSize, gridSize, gridSize);
     }
   }
 }
@@ -171,10 +180,10 @@ function drawSnake() {
     let part = snakeParts[i];
     ctx.drawImage(
       snakebodyImg,
-      part.x * tileCount,
-      part.y * tileCount,
-      tileSize,
-      tileSize
+      part.x * numGrid,
+      part.y * numGrid,
+      gridSize,
+      gridSize
     );
   }
 
@@ -193,14 +202,14 @@ function drawSnake() {
     snakeHeadImg = snakeHeadRightImg;
   }
 
-  let tileSizeLarge = tileSize + 4;
+  let gridSizeLarge = gridSize + 4;
 
   ctx.drawImage(
     snakeHeadImg,
-    headX * tileCount,
-    headY * tileCount,
-    tileSizeLarge,
-    tileSizeLarge
+    headX * numGrid,
+    headY * numGrid,
+    gridSizeLarge,
+    gridSizeLarge
   );
 }
 
@@ -223,10 +232,10 @@ function drawApple() {
   appleImg.src = currentAppleImg;
   ctx.drawImage(
     appleImg,
-    appleX * tileCount,
-    appleY * tileCount,
-    tileSize,
-    tileSize
+    foodX * numGrid,
+    foodY * numGrid,
+    gridSize,
+    gridSize
   );
 }
 
@@ -236,14 +245,14 @@ appleImg.src = "images/appleImg.png";
 
 function drawApple() {
   ctx.fillStyle = "red";
-  ctx.fillRect(appleX * tileCount, appleY * tileCount, tileSize, tileSize);
+  ctx.fillRect(foodX * numGrid, foodY * numGrid, gridSize, gridSize);
 }
 */
 
 function checkAppleCollision() {
-  if (appleX === headX && appleY == headY) {
-    appleX = Math.floor(Math.random() * tileCount);
-    appleY = Math.floor(Math.random() * tileCount);
+  if (foodX === headX && foodY == headY) {
+    foodX = Math.floor(Math.random() * numGrid);
+    foodY = Math.floor(Math.random() * numGrid);
     tailLength++;
     score++;
     gulpSound.play();
