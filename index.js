@@ -19,7 +19,7 @@ var gridSize = canvas.width / numGrid;
 var headX = 10;
 var headY = 15;
 // initialize food start position
-var foodX = 20;
+var foodX = 15;
 var foodY = 5;
 
 // set up character's initial tail length and speed 
