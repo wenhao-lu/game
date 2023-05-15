@@ -10,7 +10,7 @@ class SnakePart {
 }
 
 // Initialize game variables
-// set up canvas size and grid number
+// set up grid size and number
 // 20 X 25 = 500
 var numGrid = 20;
 var gridSize = canvas.width / numGrid;
