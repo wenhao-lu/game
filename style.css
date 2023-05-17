@@ -14,3 +14,19 @@ footer{
   margin-top: 2em;
   font-size: 0.8em;
 }
+#mainContainer{
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content:space-around;
+}
+#leftWrap{
+  font-size: 0.7em;
+  width: 400px;
+  margin-right: 2em;
+  text-align: center;
+}
+#rightWrap{
+  font-size: 0.7em;
+  width: 400px;
+  margin-left: 2em;
+}

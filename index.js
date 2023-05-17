@@ -114,7 +114,8 @@ function updateCanvasElements(x, y, isHovering) {
   // Clear the canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Draw levels
+  drawLevelText();
+
   drawLevels();
 
   if (isHovering) {
@@ -146,19 +147,28 @@ function updateCanvasElements(x, y, isHovering) {
 }
 
 let image = new Image();
-image.src = "images/introImg.png";
+image.src = "images/introImg.webp";
 
+let frameImg = new Image();
+frameImg.src = "images/frameImg.webp";
 
+function drawLevelText() {
+  let levelText = "Choose Difficulty Level";
+  ctx.fillText(levelText, 110, 30);
+  ctx.font = "bold 16px Arial";
+  ctx.fillStyle = "black";
+}
 
 function drawLevels() {
+
+  drawLevelText();
+
   for (let i = 0; i < levels.length; i++) {
     const level = levels[i];
-    ctx.fillStyle = level.color;
-    ctx.fillRect(level.x, level.y, 100, 50);
+    ctx.drawImage(frameImg, level.x, level.y, 100, 50);
     ctx.fillStyle = "black";
     ctx.font = "bold 16px Arial";
     ctx.fillText(level.name, level.x + 25, level.y + 30);
-
   }
 
   ctx.drawImage(image, 130, 150, 150, 200);
@@ -166,6 +176,8 @@ function drawLevels() {
 }
 
 drawLevels();
+
+
 
 
 function drawGame() {
