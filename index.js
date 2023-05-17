@@ -41,9 +41,137 @@ const failSound = new Audio("fail.mp3");
 const lightSquareColor = "white";
 const darkSquareColor = "#C4E2FF";
 
+
+/*  new features  */
+
+var levelOutput = document.getElementById("output");
+
+const levels = [
+  { name: "easy", color: "green", x: 50, y: 50 },
+  { name: "medium", color: "yellow", x: 150, y: 50 },
+  { name: "hard", color: "red", x: 250, y: 50 },
+];
+
+let difficultyLevel = null;
+
+canvas.addEventListener("click", handleCanvasClick);
+canvas.addEventListener("mousemove", handleMouseMove);
+
+function handleCanvasClick(event) {
+  const rect = canvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+
+  for (let i = 0; i < levels.length; i++) {
+    const level = levels[i];
+    if (
+      x >= level.x &&
+      x <= level.x + 100 &&
+      y >= level.y &&
+      y <= level.y + 50
+    ) {
+      setDifficulty(level.name);
+      return;
+    }
+  }
+}
+
+function setDifficulty(level) {
+  canvas.removeEventListener("click", handleCanvasClick);
+  canvas.removeEventListener("mousemove", handleMouseMove);
+  canvas.style.cursor = "default";
+  canvas.style.border = "none";
+  difficultyLevel = level;
+  console.log(level);
+  levelOutput.innerHTML = "Difficulty Level: "+ level;
+  drawGame();
+}
+
+function handleMouseMove(event) {
+  const rect = canvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+
+  let isHovering = false;
+
+  for (let i = 0; i < levels.length; i++) {
+    const level = levels[i];
+    if (
+      x >= level.x &&
+      x <= level.x + 100 &&
+      y >= level.y &&
+      y <= level.y + 50
+    ) {
+      isHovering = true;
+      break;
+    }
+  }
+
+  updateCanvasElements(x, y, isHovering);
+}
+
+function updateCanvasElements(x, y, isHovering) {
+  // Clear the canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw levels
+  drawLevels();
+
+  if (isHovering) {
+    for (let i = 0; i < levels.length; i++) {
+      const level = levels[i];
+      if (
+        x >= level.x &&
+        x <= level.x + 100 &&
+        y >= level.y &&
+        y <= level.y + 50
+      ) {
+        // Draw a rectangle with the level's color when hovering over it
+        ctx.fillStyle = level.color;
+        ctx.fillRect(level.x, level.y, 100, 50);
+        break;
+      }
+    }
+  }
+}
+
+function drawLevels() {
+  for (let i = 0; i < levels.length; i++) {
+    const level = levels[i];
+    ctx.fillStyle = level.color;
+    ctx.fillRect(level.x, level.y, 100, 50);
+    ctx.fillStyle = "black";
+    ctx.font = "bold 16px Arial";
+    ctx.fillText(level.name, level.x + 25, level.y + 30);
+  }
+}
+
+drawLevels();
+
+
+
+
+
+
+
+
 function drawGame() {
   xVelocity = inputsXVelocity;
   yVelocity = inputsYVelocity;
+
+  if (!difficultyLevel) return;
+  
+  if (score > 1) {
+    if (difficultyLevel === "easy") {
+      speed = 6;
+    } else if (difficultyLevel === "medium") {
+      speed = 8;
+    } else if (difficultyLevel === "hard") {
+      speed = 10;
+    }
+  }
+
+
 
   if (themeSong.paused) {
     themeSong.play();
