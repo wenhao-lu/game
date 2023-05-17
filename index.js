@@ -83,7 +83,7 @@ function setDifficulty(level) {
   canvas.style.border = "none";
   difficultyLevel = level;
   console.log(level);
-  levelOutput.innerHTML = "Difficulty Level: "+ level;
+  levelOutput.innerHTML = "Difficulty Level: "+ level.toUpperCase();
   drawGame();
 }
 
@@ -129,11 +129,26 @@ function updateCanvasElements(x, y, isHovering) {
         // Draw a rectangle with the level's color when hovering over it
         ctx.fillStyle = level.color;
         ctx.fillRect(level.x, level.y, 100, 50);
+
+        let gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+        gradient.addColorStop("0.3", " magenta");
+        gradient.addColorStop("0.9", "blue");
+        gradient.addColorStop("0.1", "red");
+        ctx.fillStyle = gradient;
+
+        ctx.font = "bold 16px Arial";
+        ctx.fillText(level.name, level.x + 25, level.y + 30);
+
         break;
       }
     }
   }
 }
+
+let image = new Image();
+image.src = "images/introImg.png";
+
+
 
 function drawLevels() {
   for (let i = 0; i < levels.length; i++) {
@@ -143,16 +158,14 @@ function drawLevels() {
     ctx.fillStyle = "black";
     ctx.font = "bold 16px Arial";
     ctx.fillText(level.name, level.x + 25, level.y + 30);
+
   }
+
+  ctx.drawImage(image, 130, 150, 150, 200);
+
 }
 
 drawLevels();
-
-
-
-
-
-
 
 
 function drawGame() {
@@ -240,13 +253,13 @@ function isGameOver() {
       gradient.addColorStop("0.3", "red");
       ctx.fillStyle = gradient;
 
-      ctx.fillText("Game Over", canvas.width / 6.5, canvas.height / 2);
+      ctx.fillText("Game Over", canvas.width / 6, canvas.height / 2);
 
       failSound.play();
       themeSong.pause();
     }
 
-    ctx.fillText("Game Over", canvas.width / 6.5, canvas.height / 2);
+    ctx.fillText("Game Over", canvas.width / 6, canvas.height / 2);
   }
 
   return gameOver;
