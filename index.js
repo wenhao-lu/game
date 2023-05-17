@@ -11,7 +11,7 @@ class SnakePart {
 
 // Initialize game variables
 // set up grid size and number
-// 20 X 25 = 500
+// 20 X 20 = 400
 var numGrid = 20;
 var gridSize = canvas.width / numGrid;
 
@@ -36,6 +36,7 @@ var yVelocity = 0;
 
 const themeSong = new Audio("theme.mp3");
 const gulpSound = new Audio("gulp.mp3");
+const wowSound = new Audio("wow.mp3");
 const failSound = new Audio("fail.mp3");
 
 const lightSquareColor = "white";
@@ -47,9 +48,9 @@ const darkSquareColor = "#C4E2FF";
 var levelOutput = document.getElementById("output");
 
 const levels = [
-  { name: "easy", color: "green", x: 50, y: 50 },
-  { name: "medium", color: "yellow", x: 150, y: 50 },
-  { name: "hard", color: "red", x: 250, y: 50 },
+  { name: "easy", x: 50, y: 50 },
+  { name: "medium", x: 150, y: 50 },
+  { name: "hard", x: 250, y: 50 },
 ];
 
 let difficultyLevel = null;
@@ -186,7 +187,7 @@ function drawGame() {
 
   if (!difficultyLevel) return;
   
-  if (score > 1) {
+  if (score > 0) {
     if (difficultyLevel === "easy") {
       speed = 6;
     } else if (difficultyLevel === "medium") {
@@ -195,8 +196,6 @@ function drawGame() {
       speed = 10;
     }
   }
-
-
 
   if (themeSong.paused) {
     themeSong.play();
@@ -215,6 +214,10 @@ function drawGame() {
   drawSnake();
 
   drawScore();
+
+  if (score > 0 && score % 10 === 0) {
+    drawDragon();
+  }
 
   if (score > 5) {
     speed = 9;
@@ -302,13 +305,6 @@ function clearScreen() {
   }
 }
 
-/*
-function clearScreen() {
-  ctx.fillStyle = "black";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-}
-*/
-
 const snakeHeadUpImg = new Image();
 snakeHeadUpImg.src = "images/snakeHeadUp.png";
 
@@ -376,6 +372,25 @@ const appleImgs = [
   "images/appleImg4.png",
 ];
 
+
+// add dragon to the game
+var dragonPosition;
+
+function drawDragon() {
+  let dragonImg = new Image();
+  dragonImg.src = "images/dragonImg.webp";
+  if (score > 0 && score % 10 === 0 && !dragonPosition) {
+    dragonPosition = {
+      x: Math.floor(Math.random() * (numGrid - 1)) * gridSize,
+      y: Math.floor(Math.random() * (numGrid - 1)) * gridSize
+    };
+  }
+  
+  if (dragonPosition) {
+    ctx.drawImage(dragonImg, dragonPosition.x, dragonPosition.y, gridSize, gridSize);
+  }
+}
+
 let currentAppleImg = appleImgs[0];
 
 function drawApple() {
@@ -409,6 +424,12 @@ function checkAppleCollision() {
     gulpSound.play();
     let randomIndex = Math.floor(Math.random() * appleImgs.length);
     currentAppleImg = appleImgs[randomIndex];
+  }
+
+  if (dragonPosition && headX === dragonPosition.x && headY === dragonPosition.y) {
+    tailLength = 1; // Reset tail length to 1 upon collision
+    dragonPosition = null;
+    wowSound.play();
   }
 }
 
