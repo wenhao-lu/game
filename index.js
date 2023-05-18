@@ -319,7 +319,7 @@ function isGameOver() {
         var scoreObject = { name: playerName, score: score };
 
         // Send the score object to the server to save in the database
-        fetch("https://example.com/save-score", {
+        fetch("https://xxx/save-score", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -331,17 +331,17 @@ function isGameOver() {
               // Score saved successfully
               return response.json();
             } else {
-              // Error occurred while saving the score
+              // Error
               throw new Error("Error saving score: " + response.status);
             }
           })
           .then(function (data) {
             // Score saved and response received from the server
             console.log(data);
-            // You can perform any additional actions here
+            
           })
           .catch(function (error) {
-            // Error occurred during the save process
+            // Error
             console.error(error);
           });
       }
