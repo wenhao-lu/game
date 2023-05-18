@@ -22,12 +22,12 @@ var headY = 15;
 var foodX = 15;
 var foodY = 5;
 
-// set up character's initial tail length and speed 
+// set up character's initial tail length and speed
 const snakeParts = [];
 var tailLength = 1;
 var speed = 6;
 
-// initialize keyboard input direction variables 
+// initialize keyboard input direction variables
 var inputsXVelocity = 0;
 var inputsYVelocity = 0;
 // initialize character's move direction variables
@@ -41,7 +41,6 @@ const failSound = new Audio("fail.mp3");
 
 const lightSquareColor = "white";
 const darkSquareColor = "#C4E2FF";
-
 
 /*  new features  */
 
@@ -84,7 +83,7 @@ function setDifficulty(level) {
   canvas.style.border = "none";
   difficultyLevel = level;
   console.log(level);
-  levelOutput.innerHTML = "Difficulty Level: "+ level.toUpperCase();
+  levelOutput.innerHTML = "Difficulty Level: " + level.toUpperCase();
   drawGame();
 }
 
@@ -129,15 +128,13 @@ function updateCanvasElements(x, y, isHovering) {
         y <= level.y + 50
       ) {
         // Draw a rectangle with the level's color when hovering over it
-        ctx.fillStyle = level.color;
-        ctx.fillRect(level.x, level.y, 100, 50);
 
+        canvas.style.cursor = "pointer";
         let gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
         gradient.addColorStop("0.3", " magenta");
         gradient.addColorStop("0.9", "blue");
         gradient.addColorStop("0.1", "red");
         ctx.fillStyle = gradient;
-
         ctx.font = "bold 16px Arial";
         ctx.fillText(level.name, level.x + 25, level.y + 30);
 
@@ -161,7 +158,6 @@ function drawLevelText() {
 }
 
 function drawLevels() {
-
   drawLevelText();
 
   for (let i = 0; i < levels.length; i++) {
@@ -173,20 +169,16 @@ function drawLevels() {
   }
 
   ctx.drawImage(image, 130, 150, 150, 200);
-
 }
 
 drawLevels();
-
-
-
 
 function drawGame() {
   xVelocity = inputsXVelocity;
   yVelocity = inputsYVelocity;
 
   if (!difficultyLevel) return;
-  
+
   if (score > 0) {
     if (difficultyLevel === "easy") {
       speed = 6;
@@ -215,7 +207,7 @@ function drawGame() {
 
   drawScore();
 
-  if (score > 0 && score % 10 === 0) {
+  if (score > 0 && score % 7 === 0) {
     drawDragon();
   }
 
@@ -272,6 +264,89 @@ function isGameOver() {
 
       failSound.play();
       themeSong.pause();
+
+      // new feature to save usesr name and output the score
+      let playerName = getCookie("playerName");
+      if (playerName) {
+        saveScore(playerName, score);
+        outputScores();
+      } else {
+        playerName = prompt("Enter your name:");
+        if (playerName) {
+          setCookie(playerName);
+          saveScore(playerName, score);
+          outputScores();
+        }
+      }
+
+      function setCookie(playerName) {
+        var expire = new Date();
+        expire.setDate(expire.getDate() + 365);
+        var cookieValue =
+          "playerName = " +
+          playerName +
+          "; expires = " +
+          expire.toGMTString() +
+          "; path=/";
+        document.cookie = cookieValue;
+      }
+
+      function getCookie(playerName) {
+        var cookieArray = document.cookie.split("; ");
+        for (var i = 0; i < cookieArray.length; i++) {
+          var cookie = cookieArray[i];
+          var cookieParts = cookie.split("=");
+          var cookieName = cookieParts[0];
+          var cookieValue = cookieParts[1];
+          if (cookieName === playerName) {
+            return cookieValue;
+          }
+        }
+        return null;
+      }
+
+      function outputScores() {
+        var scoreList = document.getElementById("scoreList");
+        var newRecord = document.createElement("li");
+        newRecord.textContent = playerName + " - " + score;
+        scoreList.appendChild(newRecord);
+      }
+
+      /*
+      // Save the score and playerName to the database
+      function saveScore(playerName, score) {
+        // Create a new score object
+        var scoreObject = { name: playerName, score: score };
+
+        // Send the score object to the server to save in the database
+        fetch("https://example.com/save-score", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(scoreObject),
+        })
+          .then(function (response) {
+            if (response.ok) {
+              // Score saved successfully
+              return response.json();
+            } else {
+              // Error occurred while saving the score
+              throw new Error("Error saving score: " + response.status);
+            }
+          })
+          .then(function (data) {
+            // Score saved and response received from the server
+            console.log(data);
+            // You can perform any additional actions here
+          })
+          .catch(function (error) {
+            // Error occurred during the save process
+            console.error(error);
+          });
+      }
+      
+      */
     }
 
     ctx.fillText("Game Over", canvas.width / 6, canvas.height / 2);
@@ -372,22 +447,27 @@ const appleImgs = [
   "images/appleImg4.png",
 ];
 
-
 // add dragon to the game
 var dragonPosition;
 
 function drawDragon() {
   let dragonImg = new Image();
   dragonImg.src = "images/dragonImg.webp";
-  if (score > 0 && score % 10 === 0 && !dragonPosition) {
+  if (score > 0 && score % 7 === 0 && !dragonPosition) {
     dragonPosition = {
       x: Math.floor(Math.random() * (numGrid - 1)) * gridSize,
-      y: Math.floor(Math.random() * (numGrid - 1)) * gridSize
+      y: Math.floor(Math.random() * (numGrid - 1)) * gridSize,
     };
   }
-  
+
   if (dragonPosition) {
-    ctx.drawImage(dragonImg, dragonPosition.x, dragonPosition.y, gridSize, gridSize);
+    ctx.drawImage(
+      dragonImg,
+      dragonPosition.x,
+      dragonPosition.y,
+      gridSize,
+      gridSize
+    );
   }
 }
 
@@ -396,27 +476,11 @@ let currentAppleImg = appleImgs[0];
 function drawApple() {
   let appleImg = new Image();
   appleImg.src = currentAppleImg;
-  ctx.drawImage(
-    appleImg,
-    foodX * numGrid,
-    foodY * numGrid,
-    gridSize,
-    gridSize
-  );
+  ctx.drawImage(appleImg, foodX * numGrid, foodY * numGrid, gridSize, gridSize);
 }
-
-/*
-let appleImg = new Image();
-appleImg.src = "images/appleImg.png";
-
-function drawApple() {
-  ctx.fillStyle = "red";
-  ctx.fillRect(foodX * numGrid, foodY * numGrid, gridSize, gridSize);
-}
-*/
 
 function checkAppleCollision() {
-  if (foodX === headX && foodY == headY) {
+  if (foodX === headX && foodY === headY) {
     foodX = Math.floor(Math.random() * numGrid);
     foodY = Math.floor(Math.random() * numGrid);
     tailLength++;
@@ -426,7 +490,11 @@ function checkAppleCollision() {
     currentAppleImg = appleImgs[randomIndex];
   }
 
-  if (dragonPosition && headX === dragonPosition.x && headY === dragonPosition.y) {
+  if (
+    dragonPosition &&
+    headX === dragonPosition.x &&
+    headY === dragonPosition.y
+  ) {
     tailLength = 1; // Reset tail length to 1 upon collision
     dragonPosition = null;
     wowSound.play();
