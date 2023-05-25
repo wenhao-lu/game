@@ -1,3 +1,5 @@
+// Game Version 1.2
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
@@ -25,7 +27,7 @@ var foodY = 5;
 // set up character's initial tail length and speed
 const snakeParts = [];
 var tailLength = 1;
-var speed = 6;
+var speed = 5;
 
 // initialize keyboard input direction variables
 var inputsXVelocity = 0;
@@ -57,7 +59,8 @@ var playerName = [
 
 /*  new features  */
 
-var levelOutput = document.getElementById("output");
+var levelOutput = document.getElementById("levelOutput");
+var speedOutput = document.getElementById("speedOutput");
 
 const levels = [
   { name: "easy", x: 50, y: 50 },
@@ -198,9 +201,11 @@ function drawGame() {
     } else if (difficultyLevel === "medium") {
       speed = 8;
     } else if (difficultyLevel === "hard") {
-      speed = 10;
+      speed = 12;
     }
   }
+
+  speedOutput.innerHTML = "Current Speed: " + speed;
 
   if (themeSong.paused) {
     themeSong.play();
@@ -219,17 +224,11 @@ function drawGame() {
   drawSnake();
 
   drawScore();
-
+  /* 
   if (score > 0 && score % 7 === 0) {
     drawDragon();
   }
-
-  if (score > 5) {
-    speed = 9;
-  }
-  if (score > 10) {
-    speed = 11;
-  }
+  */
 
   setTimeout(drawGame, 1000 / speed);
 }
@@ -368,7 +367,8 @@ function isGameOver() {
         var scoreList = document.getElementById("scoreList");
         var newRecord = document.createElement("li");
         randomName = playerName[Math.floor(Math.random() * playerName.length)];
-        newRecord.textContent = randomName + " - " + score;
+        newRecord.textContent =
+          randomName + " - " + difficultyLevel + " - " + score;
         scoreList.appendChild(newRecord);
       }
       outputScores();
@@ -388,8 +388,8 @@ function drawScore() {
   gradient.addColorStop("0.9", "blue");
   gradient.addColorStop("0.9", "red");
   ctx.fillStyle = gradient;
-  ctx.font = "10px Verdana";
-  ctx.fillText("Score: " + score, canvas.width - 220, 10);
+  ctx.font = "15px Verdana";
+  ctx.fillText("Score: " + score, canvas.width - 230, 15);
 }
 
 function clearScreen() {
@@ -473,6 +473,7 @@ const foodImgs = [
 ];
 
 // add dragon to the game
+/*
 var dragonPosition;
 
 function drawDragon() {
@@ -495,7 +496,7 @@ function drawDragon() {
     );
   }
 }
-
+*/
 let currentFoodImg = foodImgs[0];
 
 function drawFood() {
@@ -514,7 +515,7 @@ function checkFoodCollision() {
     let randomIndex = Math.floor(Math.random() * foodImgs.length);
     currentFoodImg = foodImgs[randomIndex];
   }
-
+  /*
   if (
     dragonPosition &&
     headX === dragonPosition.x &&
@@ -524,6 +525,7 @@ function checkFoodCollision() {
     dragonPosition = null;
     wowSound.play();
   }
+  */
 }
 
 document.body.addEventListener("keydown", keyDown);

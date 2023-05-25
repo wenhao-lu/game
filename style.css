@@ -25,7 +25,23 @@ footer{
   margin-right: 2em;
   text-align: center;
 }
+#instructionContainer{
+  display: flex;
+  flex-flow: column nowrap;
+}
 #rightWrap{
+  font-size: 0.7em;
+  width: 400px;
+  margin-left: 2em;
+}
+#levelOutput{
+  color: blue;
+  font-size: 0.7em;
+  width: 400px;
+  margin-left: 2em;
+}
+#speedOutput{
+  color: blue;
   font-size: 0.7em;
   width: 400px;
   margin-left: 2em;
