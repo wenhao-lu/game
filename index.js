@@ -42,6 +42,19 @@ const failSound = new Audio("fail.mp3");
 const lightSquareColor = "white";
 const darkSquareColor = "#C4E2FF";
 
+var playerName = [
+  "SniperWolf",
+  "NinjaMaster",
+  "Shadowblade",
+  "Deathstalker",
+  "Thunderstrike",
+  "Firestorm",
+  "IceQueen",
+  "DarkKnight",
+  "CyberFury",
+  "PhoenixRider",
+];
+
 /*  new features  */
 
 var levelOutput = document.getElementById("output");
@@ -201,8 +214,8 @@ function drawGame() {
 
   clearScreen();
 
-  checkAppleCollision();
-  drawApple();
+  checkFoodCollision();
+  drawFood();
   drawSnake();
 
   drawScore();
@@ -266,6 +279,7 @@ function isGameOver() {
       themeSong.pause();
 
       // new feature to save usesr name and output the score
+      /*
       let playerName = getCookie("playerName");
       if (playerName) {
         saveScore(playerName, score);
@@ -311,6 +325,7 @@ function isGameOver() {
         newRecord.textContent = playerName + " - " + score;
         scoreList.appendChild(newRecord);
       }
+      */
 
       /*
       // Save the score and playerName to the database
@@ -347,6 +362,16 @@ function isGameOver() {
       }
       
       */
+
+      // output the score with random player name
+      function outputScores() {
+        var scoreList = document.getElementById("scoreList");
+        var newRecord = document.createElement("li");
+        randomName = playerName[Math.floor(Math.random() * playerName.length)];
+        newRecord.textContent = randomName + " - " + score;
+        scoreList.appendChild(newRecord);
+      }
+      outputScores();
     }
 
     ctx.fillText("Game Over", canvas.width / 6, canvas.height / 2);
@@ -440,11 +465,11 @@ function changeSnakePosition() {
   headY = headY + yVelocity;
 }
 
-const appleImgs = [
-  "images/appleImg1.png",
-  "images/appleImg2.png",
-  "images/appleImg3.png",
-  "images/appleImg4.png",
+const foodImgs = [
+  "images/foodImg1.png",
+  "images/foodImg2.png",
+  "images/foodImg3.png",
+  "images/foodImg4.png",
 ];
 
 // add dragon to the game
@@ -471,23 +496,23 @@ function drawDragon() {
   }
 }
 
-let currentAppleImg = appleImgs[0];
+let currentFoodImg = foodImgs[0];
 
-function drawApple() {
-  let appleImg = new Image();
-  appleImg.src = currentAppleImg;
-  ctx.drawImage(appleImg, foodX * numGrid, foodY * numGrid, gridSize, gridSize);
+function drawFood() {
+  let foodImg = new Image();
+  foodImg.src = currentFoodImg;
+  ctx.drawImage(foodImg, foodX * numGrid, foodY * numGrid, gridSize, gridSize);
 }
 
-function checkAppleCollision() {
+function checkFoodCollision() {
   if (foodX === headX && foodY === headY) {
     foodX = Math.floor(Math.random() * numGrid);
     foodY = Math.floor(Math.random() * numGrid);
     tailLength++;
     score++;
     gulpSound.play();
-    let randomIndex = Math.floor(Math.random() * appleImgs.length);
-    currentAppleImg = appleImgs[randomIndex];
+    let randomIndex = Math.floor(Math.random() * foodImgs.length);
+    currentFoodImg = foodImgs[randomIndex];
   }
 
   if (
