@@ -44,22 +44,9 @@ const failSound = new Audio("fail.mp3");
 const lightSquareColor = "white";
 const darkSquareColor = "#C4E2FF";
 
-var playerName = [
-  "SniperWolf",
-  "NinjaMaster",
-  "Shadowblade",
-  "Deathstalker",
-  "Thunderstrike",
-  "Firestorm",
-  "IceQueen",
-  "DarkKnight",
-  "CyberFury",
-  "PhoenixRider",
-];
-
 window.addEventListener("load", outputScores);
 
-// output the score with random player name
+// output the score with player name
 function outputScores() {
   var scoreList = document.getElementById("scoreList");
 
@@ -72,11 +59,21 @@ function outputScores() {
       }
     })
     .then(function (data) {
+      // Filter the scores data to include only rows where 'email' doesn't have '@'
+      var filteredData = data.filter(function (score) {
+        return !score.email.includes("@");
+      });
+
+      // Sort the filtered scores data by 'msg' in descending order
+      filteredData.sort(function (a, b) {
+        return b.msg - a.msg;
+      });
+
       // Clear the existing score list
       scoreList.innerHTML = "";
 
-      // Iterate over the scores data and create list items
-      data.forEach(function (score) {
+      // Iterate over the sorted and filtered scores data and create list items
+      filteredData.forEach(function (score) {
         var newRecord = document.createElement("li");
         newRecord.textContent =
           score.name + " - " + score.email + " - " + score.msg;
@@ -220,12 +217,12 @@ function drawLevels() {
 
 drawLevels();
 
-function confirmName() {
-  const nameInput = document.getElementById("name");
-  const confirmBtn = document.getElementById("confirmBtn");
+const nameInput = document.getElementById("name");
+const confirmBtn = document.getElementById("confirmBtn");
+const playerName = nameInput.value;
 
+function confirmName() {
   // Disable the button and store the name value
-  const playernName = nameInput.value;
   nameInput.disabled = true;
   confirmBtn.disabled = true;
 }
@@ -368,6 +365,7 @@ function isGameOver() {
       */
 
       // Save the score and playerName to the database
+
       function saveScore(playerName, difficultyLevel, score) {
         // Create a new score object
         var scoreObject = {
