@@ -57,6 +57,37 @@ var playerName = [
   "PhoenixRider",
 ];
 
+window.addEventListener("load", outputScores);
+
+// output the score with random player name
+function outputScores() {
+  var scoreList = document.getElementById("scoreList");
+
+  fetch("https://www.wlkevin.com/api/contacts/list")
+    .then(function (response) {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error("Error fetching scores: " + response.status);
+      }
+    })
+    .then(function (data) {
+      // Clear the existing score list
+      scoreList.innerHTML = "";
+
+      // Iterate over the scores data and create list items
+      data.forEach(function (score) {
+        var newRecord = document.createElement("li");
+        newRecord.textContent =
+          score.name + " - " + score.email + " - " + score.msg;
+        scoreList.appendChild(newRecord);
+      });
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+}
+
 /*  new features  */
 
 var levelOutput = document.getElementById("levelOutput");
@@ -188,6 +219,16 @@ function drawLevels() {
 }
 
 drawLevels();
+
+function confirmName() {
+  const nameInput = document.getElementById("name");
+  const confirmBtn = document.getElementById("confirmBtn");
+
+  // Disable the button and store the name value
+  const playernName = nameInput.value;
+  nameInput.disabled = true;
+  confirmBtn.disabled = true;
+}
 
 function drawGame() {
   xVelocity = inputsXVelocity;
@@ -326,14 +367,17 @@ function isGameOver() {
       }
       */
 
-      /*
       // Save the score and playerName to the database
-      function saveScore(playerName, score) {
+      function saveScore(playerName, difficultyLevel, score) {
         // Create a new score object
-        var scoreObject = { name: playerName, score: score };
+        var scoreObject = {
+          name: playerName,
+          email: difficultyLevel,
+          msg: score,
+        };
 
         // Send the score object to the server to save in the database
-        fetch("https://xxx/save-score", {
+        fetch("https://www.wlkevin.com/api/contacts", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -352,26 +396,17 @@ function isGameOver() {
           .then(function (data) {
             // Score saved and response received from the server
             console.log(data);
-            
           })
           .catch(function (error) {
             // Error
             console.error(error);
           });
       }
-      
-      */
 
-      // output the score with random player name
-      function outputScores() {
-        var scoreList = document.getElementById("scoreList");
-        var newRecord = document.createElement("li");
-        randomName = playerName[Math.floor(Math.random() * playerName.length)];
-        newRecord.textContent =
-          randomName + " - " + difficultyLevel + " - " + score;
-        scoreList.appendChild(newRecord);
+      if (playerName) {
+        saveScore(playerName, difficultyLevel, score);
+        outputScores();
       }
-      outputScores();
     }
 
     ctx.fillText("Game Over", canvas.width / 6, canvas.height / 2);

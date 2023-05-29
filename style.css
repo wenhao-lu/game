@@ -46,3 +46,10 @@ footer{
   width: 400px;
   margin-left: 2em;
 }
+.inputFrom{
+  font-size: 0.7em;
+  width: 400px;
+  margin-left: 2em;
+  margin-bottom: 2em;
+  color:green;
+}
