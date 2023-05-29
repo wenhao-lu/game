@@ -1,4 +1,4 @@
-# Snake Game v1.2
+# Drangon Ball Game v1.2
 
 This is a simple Snake game core integrated with intuitive Anime-UI using JavaScript and HTML5 Canvas. It allows players to control an anime character - Goku and dragon ball- and eat food to grow longer. The objective is to avoid colliding with walls or the character's own body. The game provides different difficulty levels and keeps track of the player's score.
 
