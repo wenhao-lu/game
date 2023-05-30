@@ -20,7 +20,7 @@ You can play the game online [here](http://game.wlkevin.com/).
 ## Technologies Used
 
 - Frontend: Pure JavaScript, HTML5 Canvas
-- Backend: CMS (Laravel), MySQL
+- Backend: Custom API, CMS (Laravel), MySQL
 
 ## How to Play
 
