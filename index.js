@@ -46,7 +46,8 @@ const darkSquareColor = "#C4E2FF";
 
 window.addEventListener("load", outputScores);
 
-// output the score with player name
+// output score module
+// GET request to API endpint for list of scores & names
 function outputScores() {
   var scoreList = document.getElementById("scoreList");
 
@@ -85,7 +86,7 @@ function outputScores() {
     });
 }
 
-/*  new features  */
+// level selection module
 
 var levelOutput = document.getElementById("levelOutput");
 var speedOutput = document.getElementById("speedOutput");
@@ -98,6 +99,7 @@ const levels = [
 
 let difficultyLevel = null;
 
+//listen to mouse position for level selection
 canvas.addEventListener("click", handleCanvasClick);
 canvas.addEventListener("mousemove", handleMouseMove);
 
@@ -131,6 +133,7 @@ function setDifficulty(level) {
   drawGame();
 }
 
+//mouse click recognization/effectiveness area
 function handleMouseMove(event) {
   const rect = canvas.getBoundingClientRect();
   const x = event.clientX - rect.left;
@@ -155,7 +158,7 @@ function handleMouseMove(event) {
 }
 
 function updateCanvasElements(x, y, isHovering) {
-  // Clear the canvas
+  // Clear the canvas, draw level selection
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   drawLevelText();
@@ -171,8 +174,7 @@ function updateCanvasElements(x, y, isHovering) {
         y >= level.y &&
         y <= level.y + 50
       ) {
-        // Draw a rectangle with the level's color when hovering over it
-
+        // Draw a gradient text with the level's color when hovering over it
         canvas.style.cursor = "pointer";
         let gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
         gradient.addColorStop("0.3", " magenta");
@@ -187,7 +189,7 @@ function updateCanvasElements(x, y, isHovering) {
     }
   }
 }
-
+// level selection images
 let image = new Image();
 image.src = "images/introImg.webp";
 
@@ -200,7 +202,7 @@ function drawLevelText() {
   ctx.font = "bold 16px Arial";
   ctx.fillStyle = "black";
 }
-
+// draw level frame and intro images
 function drawLevels() {
   drawLevelText();
 
@@ -217,20 +219,152 @@ function drawLevels() {
 
 drawLevels();
 
+// input player name module
 const nameInput = document.getElementById("name");
 const confirmBtn = document.getElementById("confirmBtn");
 const playerName = nameInput.value;
-
+// disable the button after entering the name
 function confirmName() {
-  // Disable the button and store the name value
   nameInput.disabled = true;
   confirmBtn.disabled = true;
 }
 
+// draw game background module
+function clearScreen() {
+  for (let i = 0; i < numGrid; i++) {
+    for (let j = 0; j < numGrid; j++) {
+      if ((i + j) % 2 === 0) {
+        ctx.fillStyle = lightSquareColor;
+      } else {
+        ctx.fillStyle = darkSquareColor;
+      }
+      ctx.fillRect(i * gridSize, j * gridSize, gridSize, gridSize);
+    }
+  }
+}
+
+// display score module
+var score = 0;
+
+function drawScore() {
+  let gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+  gradient.addColorStop("0.9", " magenta");
+  gradient.addColorStop("0.9", "blue");
+  gradient.addColorStop("0.9", "red");
+  ctx.fillStyle = gradient;
+  ctx.font = "15px Verdana";
+  ctx.fillText("Score: " + score, canvas.width - 230, 15);
+}
+
+// draw character module
+const snakeHeadUpImg = new Image();
+snakeHeadUpImg.src = "images/snakeHeadUp.png";
+
+const snakeHeadDownImg = new Image();
+snakeHeadDownImg.src = "images/snakeHeadDown.png";
+
+const snakeHeadLeftImg = new Image();
+snakeHeadLeftImg.src = "images/snakeHeadLeft.png";
+
+const snakeHeadRightImg = new Image();
+snakeHeadRightImg.src = "images/snakeHeadRight.png";
+
+let snakeHeadImg = snakeHeadUpImg;
+
+let snakebodyImg = new Image();
+snakebodyImg.src = "images/snakebodyImg.png";
+
+function drawSnake() {
+  for (let i = 0; i < snakeParts.length; i++) {
+    let part = snakeParts[i];
+    ctx.drawImage(
+      snakebodyImg,
+      part.x * numGrid,
+      part.y * numGrid,
+      gridSize,
+      gridSize
+    );
+  }
+
+  snakeParts.push(new SnakePart(headX, headY));
+  while (snakeParts.length > tailLength) {
+    snakeParts.shift();
+  }
+
+  // draw head direction according to keyboard inputs
+  if (inputsYVelocity === -1) {
+    snakeHeadImg = snakeHeadUpImg;
+  } else if (inputsYVelocity === 1) {
+    snakeHeadImg = snakeHeadDownImg;
+  } else if (inputsXVelocity === -1) {
+    snakeHeadImg = snakeHeadLeftImg;
+  } else if (inputsXVelocity === 1) {
+    snakeHeadImg = snakeHeadRightImg;
+  }
+
+  let gridSizeLarge = gridSize + 4;
+
+  ctx.drawImage(
+    snakeHeadImg,
+    headX * numGrid,
+    headY * numGrid,
+    gridSizeLarge,
+    gridSizeLarge
+  );
+}
+
+function changeSnakePosition() {
+  headX = headX + xVelocity;
+  headY = headY + yVelocity;
+}
+
+// draw food module
+const foodImgs = [
+  "images/foodImg1.png",
+  "images/foodImg2.png",
+  "images/foodImg3.png",
+  "images/foodImg4.png",
+];
+
+let currentFoodImg = foodImgs[0];
+
+function drawFood() {
+  let foodImg = new Image();
+  foodImg.src = currentFoodImg;
+  ctx.drawImage(foodImg, foodX * numGrid, foodY * numGrid, gridSize, gridSize);
+}
+
+// check collision module
+function checkFoodCollision() {
+  if (foodX === headX && foodY === headY) {
+    foodX = Math.floor(Math.random() * numGrid);
+    foodY = Math.floor(Math.random() * numGrid);
+    tailLength++;
+    score++;
+    gulpSound.play();
+    let randomIndex = Math.floor(Math.random() * foodImgs.length);
+    currentFoodImg = foodImgs[randomIndex];
+  }
+  /*
+  if (
+    dragonPosition &&
+    headX === dragonPosition.x &&
+    headY === dragonPosition.y
+  ) {
+    tailLength = 1; // Reset tail length to 1 upon collision
+    dragonPosition = null;
+    wowSound.play();
+  }
+  */
+}
+
+// draw the game, including several functional modules
 function drawGame() {
+  //keybord input directions
   xVelocity = inputsXVelocity;
   yVelocity = inputsYVelocity;
 
+  // set up level associated with speed
   if (!difficultyLevel) return;
 
   if (score > 0) {
@@ -242,13 +376,14 @@ function drawGame() {
       speed = 12;
     }
   }
-
+  // output speed
   speedOutput.innerHTML = "Current Speed: " + speed;
 
   if (themeSong.paused) {
     themeSong.play();
   }
 
+  // a few modules that control the game logic
   changeSnakePosition();
   let result = isGameOver();
   if (result) {
@@ -258,10 +393,13 @@ function drawGame() {
   clearScreen();
 
   checkFoodCollision();
+
   drawFood();
+
   drawSnake();
 
   drawScore();
+
   /* 
   if (score > 0 && score % 7 === 0) {
     drawDragon();
@@ -271,13 +409,14 @@ function drawGame() {
   setTimeout(drawGame, 1000 / speed);
 }
 
+// game-over detection module
 function isGameOver() {
   let gameOver = false;
 
   if (yVelocity === 0 && xVelocity === 0) {
     return false;
   }
-
+  // character out of bounds
   if (headX < 0) {
     gameOver = true;
   } else if (headX === numGrid) {
@@ -287,7 +426,7 @@ function isGameOver() {
   } else if (headY === numGrid) {
     gameOver = true;
   }
-
+  // character hits tail
   for (let i = 0; i < snakeParts.length; i++) {
     let part = snakeParts[i];
     if (part.x === headX && part.y === headY) {
@@ -296,6 +435,10 @@ function isGameOver() {
     }
   }
 
+  // game-over pocess
+  // send score to the database
+  // get and list existing records from the database
+  // game-over text and sound effect
   if (gameOver) {
     ctx.fillStyle = "white";
     ctx.font = "50px Verdana";
@@ -315,7 +458,7 @@ function isGameOver() {
       failSound.play();
       themeSong.pause();
 
-      // new feature to save usesr name and output the score
+      // save player names by cookies
       /*
       let playerName = getCookie("playerName");
       if (playerName) {
@@ -356,25 +499,19 @@ function isGameOver() {
         return null;
       }
 
-      function outputScores() {
-        var scoreList = document.getElementById("scoreList");
-        var newRecord = document.createElement("li");
-        newRecord.textContent = playerName + " - " + score;
-        scoreList.appendChild(newRecord);
-      }
       */
 
-      // Save the score and playerName to the database
-
+      // player name and score storage module
+      // POST request to API endpoint to online database
       function saveScore(playerName, difficultyLevel, score) {
-        // Create a new score object
+        // create a new score object matching database table
         var scoreObject = {
           name: playerName,
           email: difficultyLevel,
           msg: score,
         };
 
-        // Send the score object to the server to save in the database
+        // send the score object to the server to save in the database
         fetch("https://www.wlkevin.com/api/contacts", {
           method: "POST",
           headers: {
@@ -384,7 +521,7 @@ function isGameOver() {
         })
           .then(function (response) {
             if (response.ok) {
-              // Score saved successfully
+              // score saved successfully
               return response.json();
             } else {
               // Error
@@ -392,11 +529,11 @@ function isGameOver() {
             }
           })
           .then(function (data) {
-            // Score saved and response received from the server
+            // score saved and response received from the server
             console.log(data);
           })
           .catch(function (error) {
-            // Error
+            // srror
             console.error(error);
           });
       }
@@ -413,154 +550,7 @@ function isGameOver() {
   return gameOver;
 }
 
-var score = 0;
-
-function drawScore() {
-  let gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-  gradient.addColorStop("0.9", " magenta");
-  gradient.addColorStop("0.9", "blue");
-  gradient.addColorStop("0.9", "red");
-  ctx.fillStyle = gradient;
-  ctx.font = "15px Verdana";
-  ctx.fillText("Score: " + score, canvas.width - 230, 15);
-}
-
-function clearScreen() {
-  for (let i = 0; i < numGrid; i++) {
-    for (let j = 0; j < numGrid; j++) {
-      if ((i + j) % 2 === 0) {
-        ctx.fillStyle = lightSquareColor;
-      } else {
-        ctx.fillStyle = darkSquareColor;
-      }
-      ctx.fillRect(i * gridSize, j * gridSize, gridSize, gridSize);
-    }
-  }
-}
-
-const snakeHeadUpImg = new Image();
-snakeHeadUpImg.src = "images/snakeHeadUp.png";
-
-const snakeHeadDownImg = new Image();
-snakeHeadDownImg.src = "images/snakeHeadDown.png";
-
-const snakeHeadLeftImg = new Image();
-snakeHeadLeftImg.src = "images/snakeHeadLeft.png";
-
-const snakeHeadRightImg = new Image();
-snakeHeadRightImg.src = "images/snakeHeadRight.png";
-
-let snakeHeadImg = snakeHeadUpImg;
-
-let snakebodyImg = new Image();
-snakebodyImg.src = "images/snakebodyImg.png";
-
-function drawSnake() {
-  for (let i = 0; i < snakeParts.length; i++) {
-    let part = snakeParts[i];
-    ctx.drawImage(
-      snakebodyImg,
-      part.x * numGrid,
-      part.y * numGrid,
-      gridSize,
-      gridSize
-    );
-  }
-
-  snakeParts.push(new SnakePart(headX, headY));
-  while (snakeParts.length > tailLength) {
-    snakeParts.shift();
-  }
-
-  if (inputsYVelocity === -1) {
-    snakeHeadImg = snakeHeadUpImg;
-  } else if (inputsYVelocity === 1) {
-    snakeHeadImg = snakeHeadDownImg;
-  } else if (inputsXVelocity === -1) {
-    snakeHeadImg = snakeHeadLeftImg;
-  } else if (inputsXVelocity === 1) {
-    snakeHeadImg = snakeHeadRightImg;
-  }
-
-  let gridSizeLarge = gridSize + 4;
-
-  ctx.drawImage(
-    snakeHeadImg,
-    headX * numGrid,
-    headY * numGrid,
-    gridSizeLarge,
-    gridSizeLarge
-  );
-}
-
-function changeSnakePosition() {
-  headX = headX + xVelocity;
-  headY = headY + yVelocity;
-}
-
-const foodImgs = [
-  "images/foodImg1.png",
-  "images/foodImg2.png",
-  "images/foodImg3.png",
-  "images/foodImg4.png",
-];
-
-// add dragon to the game
-/*
-var dragonPosition;
-
-function drawDragon() {
-  let dragonImg = new Image();
-  dragonImg.src = "images/dragonImg.webp";
-  if (score > 0 && score % 7 === 0 && !dragonPosition) {
-    dragonPosition = {
-      x: Math.floor(Math.random() * (numGrid - 1)) * gridSize,
-      y: Math.floor(Math.random() * (numGrid - 1)) * gridSize,
-    };
-  }
-
-  if (dragonPosition) {
-    ctx.drawImage(
-      dragonImg,
-      dragonPosition.x,
-      dragonPosition.y,
-      gridSize,
-      gridSize
-    );
-  }
-}
-*/
-let currentFoodImg = foodImgs[0];
-
-function drawFood() {
-  let foodImg = new Image();
-  foodImg.src = currentFoodImg;
-  ctx.drawImage(foodImg, foodX * numGrid, foodY * numGrid, gridSize, gridSize);
-}
-
-function checkFoodCollision() {
-  if (foodX === headX && foodY === headY) {
-    foodX = Math.floor(Math.random() * numGrid);
-    foodY = Math.floor(Math.random() * numGrid);
-    tailLength++;
-    score++;
-    gulpSound.play();
-    let randomIndex = Math.floor(Math.random() * foodImgs.length);
-    currentFoodImg = foodImgs[randomIndex];
-  }
-  /*
-  if (
-    dragonPosition &&
-    headX === dragonPosition.x &&
-    headY === dragonPosition.y
-  ) {
-    tailLength = 1; // Reset tail length to 1 upon collision
-    dragonPosition = null;
-    wowSound.play();
-  }
-  */
-}
-
+// keyboard mapping module
 document.body.addEventListener("keydown", keyDown);
 
 // keyboard input
@@ -599,3 +589,29 @@ function keyDown(event) {
 }
 
 drawGame();
+
+// add dragon to the game
+/*
+var dragonPosition;
+
+function drawDragon() {
+  let dragonImg = new Image();
+  dragonImg.src = "images/dragonImg.webp";
+  if (score > 0 && score % 7 === 0 && !dragonPosition) {
+    dragonPosition = {
+      x: Math.floor(Math.random() * (numGrid - 1)) * gridSize,
+      y: Math.floor(Math.random() * (numGrid - 1)) * gridSize,
+    };
+  }
+
+  if (dragonPosition) {
+    ctx.drawImage(
+      dragonImg,
+      dragonPosition.x,
+      dragonPosition.y,
+      gridSize,
+      gridSize
+    );
+  }
+}
+*/
