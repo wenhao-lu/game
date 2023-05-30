@@ -1,4 +1,4 @@
-// Game Version 1.2
+// Game Version 1.3
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");

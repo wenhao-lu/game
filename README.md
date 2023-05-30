@@ -1,4 +1,4 @@
-# Drangon Ball Game v1.2
+# Drangon Ball Game v1.3
 
 This is a simple Snake game core integrated with intuitive Anime-UI using JavaScript and HTML5 Canvas. It allows players to control an anime character - Goku and dragon ball- and eat food to grow longer. The objective is to avoid colliding with walls or the character's own body. The game provides different difficulty levels and keeps track of the player's score.
 
@@ -13,14 +13,14 @@ You can play the game online [here](http://game.wlkevin.com/).
 ## Features
 
 - Simple keyboard controls
+- Appealing anime UI (music, character, sound effects)
 - Adjustable difficulty levels (easy, medium, hard)
-- Score tracking (function in progress)
-- Randomly generated food items
+- Scores tracking/saving in remote database
 
 ## Technologies Used
 
-- Pure JavaScript
-- HTML5 Canvas
+- Frontend: Pure JavaScript, HTML5 Canvas
+- Backend: CMS (Laravel), MySQL
 
 ## How to Play
 
@@ -29,4 +29,5 @@ You can play the game online [here](http://game.wlkevin.com/).
 3. The goal is to eat the food items and avoid colliding with walls or the character's own body.
 4. Each time the character eats a food item, it will grow longer, and your score will increase.
 5. The game ends when the character collides with a wall or its own body.
-6. More features in progress.
+6. Enter player name for score tracking/listing.
+7. More features in progress.
