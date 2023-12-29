@@ -2,8 +2,7 @@
 
 body {
   font-family: "Press Start 2P", cursive;
-  margin: 0px;
-  padding: 0px;
+  padding-top: 5em;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -21,8 +20,7 @@ footer{
 }
 #leftWrap{
   font-size: 0.7em;
-  width: 400px;
-  margin-right: 2em;
+  width: 30em;
   text-align: center;
 }
 #instructionContainer{
@@ -31,7 +29,7 @@ footer{
 }
 #rightWrap{
   font-size: 0.7em;
-  width: 400px;
+  width:30em;
   margin-left: 2em;
 }
 #levelOutput{
@@ -48,7 +46,7 @@ footer{
 }
 .inputFrom{
   font-size: 0.7em;
-  width: 400px;
+  width: 30em;
   margin-left: 2em;
   margin-bottom: 2em;
   color:green;

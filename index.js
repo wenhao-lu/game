@@ -51,7 +51,7 @@ window.addEventListener("load", outputScores);
 function outputScores() {
   var scoreList = document.getElementById("scoreList");
 
-  fetch("https://www.wlkevin.com/api/contacts/list")
+  fetch("https://www.wlkevin.com/api/scores/list")
     .then(function (response) {
       if (response.ok) {
         return response.json();
@@ -60,24 +60,23 @@ function outputScores() {
       }
     })
     .then(function (data) {
-      // Filter the scores data to include only rows where 'email' doesn't have '@'
-      var filteredData = data.filter(function (score) {
-        return !score.email.includes("@");
-      });
-
-      // Sort the filtered scores data by 'msg' in descending order
-      filteredData.sort(function (a, b) {
-        return b.msg - a.msg;
+      // Extract relevant columns ('name', 'level', 'points') from the database
+      var extractedData = data.map(function (score) {
+        return {
+          name: score.name,
+          level: score.level,
+          points: score.points,
+        };
       });
 
       // Clear the existing score list
       scoreList.innerHTML = "";
 
-      // Iterate over the sorted and filtered scores data and create list items
-      filteredData.forEach(function (score) {
+      // Iterate over the extracted data and create score list
+      extractedData.forEach(function (score) {
         var newRecord = document.createElement("li");
         newRecord.textContent =
-          score.name + " - " + score.email + " - " + score.msg;
+          score.name + " - " + score.level + " - " + score.points;
         scoreList.appendChild(newRecord);
       });
     })
@@ -507,12 +506,12 @@ function isGameOver() {
         // create a new score object matching database table
         var scoreObject = {
           name: playerName,
-          email: difficultyLevel,
-          msg: score,
+          level: difficultyLevel,
+          points: score,
         };
 
         // send the score object to the server to save in the database
-        fetch("https://www.wlkevin.com/api/contacts", {
+        fetch("https://www.wlkevin.com/api/scores", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
