@@ -1,4 +1,4 @@
 /*
   Referrer-Policy: no-referrer
   Permissions-Policy: geolocation=(), microphone=(), camera=()
-  Content-Security-Policy: content="default-src 'self'; connect-src 'self' https://www.lu-kevin.com;
+  Content-Security-Policy: content="default-src 'self'; connect-src 'self' https://www.lu-kevin.com https://fonts.googleapis.com;
