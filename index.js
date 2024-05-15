@@ -51,7 +51,7 @@ window.addEventListener("load", outputScores);
 function outputScores() {
   var scoreList = document.getElementById("scoreList");
 
-  fetch("https://www.wlkevin.com/api/scores/list")
+  fetch("https://www.lu-kevin.com/api/scores/list")
     .then(function (response) {
       if (response.ok) {
         return response.json();
@@ -511,7 +511,7 @@ function isGameOver() {
         };
 
         // send the score object to the server to save in the database
-        fetch("https://www.wlkevin.com/api/scores", {
+        fetch("https://www.lu-kevin.com/api/scores", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
