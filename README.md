@@ -4,7 +4,7 @@ This is a simple Snake game core integrated with intuitive Anime-UI using JavaSc
 
 ## Demo
 
-You can play the game online [here](https://dbgame.netlify.app/).
+You can play the game online [here](https://game-wenhaolus-projects.vercel.app/).
 
 ## Screenshots
 
